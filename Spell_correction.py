@@ -37,7 +37,7 @@ class correct_spelling:
             else:
                 words[i] = "[MASK]"
                 masked_sentence = ' '.join(words)
-                preds = self.bert_predictor.predict_masked_sent(masked_sentence, top_k=500)
+                preds = self.bert_predictor.predict_masked_sent(masked_sentence, top_words=500)
                 norvig_cands = self.spl.candidates(word)
                 first_match = next((element for element in preds if element in norvig_cands), None)
 
@@ -57,7 +57,7 @@ class correct_spelling:
             homophone_index = words.index(has_homophone[0])
             words[homophone_index] = "[MASK]"
             masked_sentence = ' '.join(words)
-            preds = self.bert_predictor.predict_masked_sent(masked_sentence, top_k=500)
+            preds = self.bert_predictor.predict_masked_sent(masked_sentence, top_words=500)
 
             homophone_pair = find_homophone_pair(has_homophone[0])
 
