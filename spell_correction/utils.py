@@ -38,18 +38,33 @@ homophones = [
     ["صر", "سر"]
 ]
 
+
+def load_data(file_path):
+    return open(file_path).read()
+
+
 def find_homophone_pair(word):
-    for pair in homophones:
-        if word in pair:
-            new_pair = [*pair]
-            new_pair.remove(word)
-            return new_pair[0]
-    return None
+    """
+    Finds the homophone of a given word if it exists in the homophones list.
+    :param word: The input word to search for.
+    :return: The homophone of the given word if found, otherwise None.
+    """
+    for pair in homophones:  
+        if word in pair:  
+            new_pair = [*pair]  
+            new_pair.remove(word) 
+            return new_pair[0]  
+    return None  
+
+def get_homophone_list():
+    """
+    Generates a flat list of all homophones from the homophones list.
+    :return: A list containing all words from homophone pairs.
+    """
+    return [word for pair in homophones for word in pair]  # Flatten the list of homophone pairs
 
 
-
-
-class clean_text:
+class CleanText:
     def __init__(self) -> None:
         """
         Initializes the clean_text class by defining a normalizer and a tokenizer
