@@ -7,7 +7,8 @@ class MaskedSentencePredictor:
         self.tokenizer = BertTokenizer.from_pretrained('HooshvareLab/bert-fa-base-uncased')
         self.model = BertForMaskedLM.from_pretrained('HooshvareLab/bert-fa-base-uncased')
         self.model.eval()  
-        self.model.to('cuda')  
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self.model.to(self.device)
 
     def predict_masked_sent(self, text: str, top_words: int = 5) -> list:
         # Predicts the top words to replace the [MASK] token in the input text
