@@ -76,5 +76,5 @@ class correct_spelling:
 
 
 #Example Usage
-model = correct_spelling()
-print(model.get_correct_text("من صفر کردم"))
+# model = correct_spelling()
+# print(model.get_correct_text("من صفر کردم"))

@@ -1,46 +1,45 @@
-# Persian Spelling Corrector
+# اصلاح‌گر املای فارسی
 
-This project provides a Persian spelling correction tool that can detect and correct spelling errors in Persian sentences using a combination of techniques including a custom spell checker, BERT-based masked language model for context prediction, and homophone detection.
+این پروژه ابزاری برای اصلاح املای جملات فارسی است که با استفاده از ترکیبی از تکنیک‌ها از جمله بررسی املایی سفارشی، مدل زبانی ماسک‌شده بر پایه BERT برای پیش‌بینی زمینه‌ای و تشخیص هم‌صداها می‌تواند خطاهای املایی را شناسایی و اصلاح کند.
 
-## Features
+## ویژگی‌ها
 
-- **Spelling Correction**: Detects and corrects spelling mistakes in Persian text using a Norvig-inspired spell checker based on word frequency.
-- **Masked Sentence Prediction**: Utilizes a BERT model (`HooshvareLab/bert-fa-base-uncased`) to predict masked words in a sentence and correct spelling mistakes based on context.
-- **Homophone Detection**: Identifies homophones in a sentence and attempts to replace them with the correct word based on context.
+- **اصلاح املا**: با استفاده از یک بررسی‌گر املایی الهام‌گرفته از Norvig مبتنی بر فراوانی کلمات، خطاهای املایی در متن فارسی را شناسایی و اصلاح می‌کند.  
+- **پیش‌بینی جمله ماسک‌شده**: از مدل BERT (`HooshvareLab/bert-fa-base-uncased`) برای پیش‌بینی کلمات ماسک‌شده در جمله استفاده می‌کند و بر اساس زمینه، اشتباهات املایی را اصلاح می‌نماید.  
+- **تشخیص هم‌صدا**: هم‌صداها (کلماتی که مشابه تلفظ می‌شوند ولی معانی یا نگارش متفاوت دارند) را شناسایی کرده و با توجه به زمینه، تلاش می‌کند آن‌ها را با کلمهٔ صحیح جایگزین کند.  
 
-## Installation
+## نصب
 
-1. **Clone the repository**:
+1. **کلون کردن مخزن**:
 
    ```bash
-   git clone https://github.com/parvvaresh/Persian-Spell-Correction-using-ParsBERT
+   git clone https://github.com/telegram-nlp-farsi/Persian-Spell-Correction-using-ParsBERT
    cd Persian-Spell-Correction-using-ParsBERT
    ```
 
-2. **Install dependencies**:
+2. **نصب وابستگی‌ها**:
 
-   Make sure you have Python 3.6+ and pip installed. You will also need to install the required Python packages.
+   مطمئن شوید Python نسخهٔ 3.6 یا بالاتر و pip نصب شده است. همچنین باید بسته‌های پایتون مورد نیاز را نصب کنید.
 
    ```bash
    pip install -r requirements.txt
    ```
 
-   Required dependencies:
+   وابستگی‌های مورد نیاز:
+   - `torch`: برای PyTorch و مدل BERT  
+   - `transformers`: برای بارگذاری و استفاده از مدل از پیش آموزش‌دیده BERT  
+   - `hazm`: کتابخانهٔ NLP فارسی برای توکن‌سازی و نرمال‌سازی  
+   - `re`: عبارات منظم برای تمیزسازی متن  
 
-   - `torch`: For PyTorch and BERT model
-   - `transformers`: For loading and using the pre-trained BERT model
-   - `hazm`: Persian NLP library for tokenization and normalization
-   - `re`: Regular expressions for text cleaning
+3. **دانلود مدل BERT**:
 
-3. **Download BERT model**:
+   این پروژه از مدل فارسی BERT از پیش آموزش‌دیده (`HooshvareLab/bert-fa-base-uncased`) استفاده می‌کند. مدل به‌صورت خودکار توسط کتابخانهٔ `transformers` هنگام اجرای اسکریپت دانلود خواهد شد.
 
-   The project uses the pre-trained Persian BERT model (`HooshvareLab/bert-fa-base-uncased`). The model will be automatically downloaded by the `transformers` library when running the script.
+## نحوه استفاده
 
-## Usage
+### استفادهٔ پایه
 
-### Basic Usage
-
-To use the spelling correction feature, simply instantiate the `correct_spelling` class and call the `get_correct_text()` method with the input sentence.
+برای استفاده از قابلیت اصلاح املا، کافی است کلاس `correct_spelling` را نمونه‌سازی کرده و متد `get_correct_text()` را با جملهٔ ورودی فراخوانی کنید:
 
 ```python
 from Spell_correction import correct_spelling
@@ -50,26 +49,17 @@ corrected_sentence = model.get_correct_text("من صفر کردم")
 print(corrected_sentence)
 ```
 
-### Explanation
+### توضیحات
 
-- **`correct_spelling` Class**: This is the main class used to correct the spelling in a sentence. It uses:
-  - `CleanText` class to preprocess and clean the input sentence.
-  - `NorvigSpellChecker` to identify misspelled words and suggest corrections based on a frequency-based approach.
-  - `MaskedSentencePredictor` to use a BERT model to predict the correct spelling of masked words based on the context.
-  - Homophone detection to identify and replace homophones (words that sound the same but have different meanings or spellings).
+- **کلاس `correct_spelling`**: این کلاس اصلی برای اصلاح املای جمله است و از اجزای زیر استفاده می‌کند:  
+  - کلاس `CleanText` برای پیش‌پردازش و تمیزسازی جملهٔ ورودی.  
+  - `NorvigSpellChecker` برای شناسایی کلمات اشتباه و پیشنهاد اصلاح بر اساس رویکرد فراوانی.  
+  - `MaskedSentencePredictor` برای استفاده از مدل BERT جهت پیش‌بینی صحیح کلمات ماسک‌شده بر مبنای زمینه.  
+  - تشخیص هم‌صداها برای شناسایی و جایگزینی کلمات غلط هم‌صدا با شکل درست.  
 
-### Example
 
-```python
-model = correct_spelling()
-input_sentence = "من صفر کردم"
-corrected_sentence = model.get_correct_text(input_sentence)
-print(corrected_sentence)
-```
 
-The output will show the corrected version of the input sentence.
-
-## File Structure
+## ساختار فایل ها
 
 ```
 ├── __pycache__                        # Compiled Python files
@@ -86,6 +76,6 @@ The output will show the corrected version of the input sentence.
 └── Spell_correction.py                # Main script to run the spelling correction
 ```
 
-## License
+## لایسنس
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+این پروژه تحت مجوز MIT منتشر شده است. برای جزئیات بیشتر، فایل [LICENSE](LICENSE) را ببینید.
