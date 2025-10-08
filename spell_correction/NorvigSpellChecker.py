@@ -1,15 +1,18 @@
 from collections import Counter
 import hazm  # Ensure you have the hazm library installed for Persian NLP processing
 
+
 class NorvigSpellChecker:
     def __init__(self, words):
         """
         Initializes the spell checker with a dictionary of words and their frequencies.
         :param words: A list of words to build the frequency dictionary.
         """
-        self.WORDS = Counter(words)  # Create a frequency dictionary from the input word list
+        self.WORDS = Counter(
+            words
+        )  # Create a frequency dictionary from the input word list
         self.N = sum(self.WORDS.values())  # Total count of words
-        self.letters = 'آابپتثجچحخدذرزژسشصضطظعغفقکگلمنوهی'  # Persian alphabet
+        self.letters = "آابپتثجچحخدذرزژسشصضطظعغفقکگلمنوهی"  # Persian alphabet
 
     def P(self, word):
         """
@@ -25,7 +28,9 @@ class NorvigSpellChecker:
         :param word: The misspelled word.
         :return: The best correction based on probability.
         """
-        return max(self.word_pool(word), key=self.P)  # Select the word with the highest probability
+        return max(
+            self.word_pool(word), key=self.P
+        )  # Select the word with the highest probability
 
     def word_pool(self, word):
         """
@@ -33,20 +38,28 @@ class NorvigSpellChecker:
         :param word: The word to find corrections for.
         :return: A set of possible corrections.
         """
-        return (self.known([word]) or 
-                self.known(self.edits1(word)) or 
-                self.known(self.edits2(word)) or 
-                [word])  # Return the best available correction or the word itself if no corrections exist
-    
+        return (
+            self.known([word])
+            or self.known(self.edits1(word))
+            or self.known(self.edits2(word))
+            or [word]
+        )  # Return the best available correction or the word itself if no corrections exist
+
     def candidates(self, word):
         """
         Generates a list of possible spelling corrections for the given word.
         :param word: The word to correct.
         :return: A sorted list of candidate words based on probability.
         """
-        if self.WORDS[word] < 30 or (len(word) == 1 and word not in hazm.stopwords_list()):
-            candidates_list = list(self.known(self.edits1(word)))  # Get known one-edit words
-            candidates_list.sort(key=self.P, reverse=True)  # Sort by probability in descending order
+        if self.WORDS[word] < 30 or (
+            len(word) == 1 and word not in hazm.stopwords_list()
+        ):
+            candidates_list = list(
+                self.known(self.edits1(word))
+            )  # Get known one-edit words
+            candidates_list.sort(
+                key=self.P, reverse=True
+            )  # Sort by probability in descending order
             return candidates_list
         else:
             return word  # If word is common enough, return it as is
@@ -66,11 +79,19 @@ class NorvigSpellChecker:
         :param word: The input word.
         :return: A set of possible one-edit words.
         """
-        splits = [(word[:i], word[i:]) for i in range(len(word) + 1)]  # All possible split points
+        splits = [
+            (word[:i], word[i:]) for i in range(len(word) + 1)
+        ]  # All possible split points
         deletes = [L + R[1:] for L, R in splits if R]  # Deleting one character
-        transposes = [L + R[1] + R[0] + R[2:] for L, R in splits if len(R) > 1]  # Swapping adjacent letters
-        replaces = [L + c + R[1:] for L, R in splits if R for c in self.letters]  # Replacing a character
-        inserts = [L + c + R for L, R in splits for c in self.letters]  # Inserting a new character
+        transposes = [
+            L + R[1] + R[0] + R[2:] for L, R in splits if len(R) > 1
+        ]  # Swapping adjacent letters
+        replaces = [
+            L + c + R[1:] for L, R in splits if R for c in self.letters
+        ]  # Replacing a character
+        inserts = [
+            L + c + R for L, R in splits for c in self.letters
+        ]  # Inserting a new character
         return set(deletes + transposes + replaces + inserts)
 
     def edits2(self, word):
@@ -79,4 +100,6 @@ class NorvigSpellChecker:
         :param word: The input word.
         :return: A generator of words with two edits.
         """
-        return (e2 for e1 in self.edits1(word) for e2 in self.edits1(e1))  # Apply edits1 twice
+        return (
+            e2 for e1 in self.edits1(word) for e2 in self.edits1(e1)
+        )  # Apply edits1 twice

@@ -13,7 +13,6 @@ class correct_spelling:
         self.spl = NorvigSpellChecker(wikipedia_words)
         self.bert_predictor = MaskedSentencePredictor()
 
-
     def get_correct_text(self, sentence):
         """
         Corrects the spelling of a given sentence.
@@ -24,7 +23,7 @@ class correct_spelling:
         Returns:
             A string representing the corrected sentence.
         """
-        
+
         # Split the sentence into words and clean it
         words = self.clean_text_model.clean_text(sentence)
 
@@ -36,10 +35,14 @@ class correct_spelling:
             # Otherwise, replace it with a mask and predict the correct spelling
             else:
                 words[i] = "[MASK]"
-                masked_sentence = ' '.join(words)
-                preds = self.bert_predictor.predict_masked_sent(masked_sentence, top_words=500)
+                masked_sentence = " ".join(words)
+                preds = self.bert_predictor.predict_masked_sent(
+                    masked_sentence, top_words=500
+                )
                 norvig_cands = self.spl.candidates(word)
-                first_match = next((element for element in preds if element in norvig_cands), None)
+                first_match = next(
+                    (element for element in preds if element in norvig_cands), None
+                )
 
                 # If a correct spelling is found, replace the mask with the correct spelling
                 if first_match:
@@ -56,8 +59,10 @@ class correct_spelling:
         if has_homophone:
             homophone_index = words.index(has_homophone[0])
             words[homophone_index] = "[MASK]"
-            masked_sentence = ' '.join(words)
-            preds = self.bert_predictor.predict_masked_sent(masked_sentence, top_words=500)
+            masked_sentence = " ".join(words)
+            preds = self.bert_predictor.predict_masked_sent(
+                masked_sentence, top_words=500
+            )
 
             homophone_pair = find_homophone_pair(has_homophone[0])
 
@@ -69,12 +74,11 @@ class correct_spelling:
                 words[homophone_index] = has_homophone[0]
 
         # Join the corrected words back into a sentence
-        corrected_sentence = ' '.join(words)
-        
+        corrected_sentence = " ".join(words)
+
         return corrected_sentence
-    
 
 
-#Example Usage
+# Example Usage
 # model = correct_spelling()
 # print(model.get_correct_text("من صفر کردم"))
