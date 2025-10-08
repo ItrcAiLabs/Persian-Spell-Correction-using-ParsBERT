@@ -1,3 +1,4 @@
+# ruff: noqa: F403, F405
 from spell_correction.utils import *
 from spell_correction.MaskedSentencePredictor import MaskedSentencePredictor
 from spell_correction.NorvigSpellChecker import NorvigSpellChecker

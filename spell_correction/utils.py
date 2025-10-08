@@ -1,5 +1,4 @@
 import hazm
-from collections import Counter
 import re
 
 

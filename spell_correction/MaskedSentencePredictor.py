@@ -1,5 +1,5 @@
 import torch
-from transformers import BertTokenizer, BertModel, BertForMaskedLM
+from transformers import BertTokenizer, BertForMaskedLM
 
 
 class MaskedSentencePredictor:
@@ -40,7 +40,6 @@ class MaskedSentencePredictor:
         mighty_tokens = []
         for i, pred_idx in enumerate(top_k_indices):
             predicted_token = self.tokenizer.convert_ids_to_tokens([pred_idx])[0]
-            token_weight = top_k_weights[i]
             mighty_tokens.append(predicted_token)
 
         return mighty_tokens
