@@ -1,0 +1,56 @@
+name: Test
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      PYTHONPATH: ${{ github.workspace }}
+      TRANSFORMERS_CACHE: ${{ runner.temp }}/hf-cache
+      HF_HOME: ${{ runner.temp }}/hf-cache
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+          cache-dependency-path: |
+            requirements.txt
+
+      - name: Cache HF models (transformers/torch)
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ env.TRANSFORMERS_CACHE }}
+            ~/.cache/torch
+          key: hf-${{ runner.os }}-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            hf-${{ runner.os }}-
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Warm HuggingFace cache (ParsBERT)
+        run: |
+          python - <<'PY'
+          import os
+          from transformers import BertTokenizer, BertForMaskedLM
+          model_id = "HooshvareLab/bert-fa-base-uncased"
+          cache = os.environ.get("TRANSFORMERS_CACHE")
+          BertTokenizer.from_pretrained(model_id, cache_dir=cache)
+          BertForMaskedLM.from_pretrained(model_id, cache_dir=cache)
+          print("Model cached at:", cache)
+          PY
+
+      - name: Run tests
+        run: pytest -q
